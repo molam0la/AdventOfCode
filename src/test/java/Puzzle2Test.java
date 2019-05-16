@@ -74,4 +74,25 @@ public class Puzzle2Test {
         int result = p2.calculateOccurences(input);
         System.out.println(result);
     }
+
+    @Test
+    public void testFindingDifferencesInIds() {
+        List<String> sampleIds = new ArrayList<>();
+        sampleIds.add("abcde");
+        sampleIds.add("fghij");
+        sampleIds.add("klmno");
+        sampleIds.add("pqrst");
+        sampleIds.add("fguij");
+        sampleIds.add("axcye");
+        sampleIds.add("wvxyz");
+
+        p2.findCorrectId(sampleIds);
+        assertEquals("fghij", p2.findCorrectId(sampleIds)[0]);
+    }
+
+    @Test
+    public void testFindingDifferentIdsFromInput() {
+        List <String> input = p2.loadInput();
+        System.out.println(p2.findCorrectId(input)[0] + " " + p2.findCorrectId(input)[1]);
+    }
 }

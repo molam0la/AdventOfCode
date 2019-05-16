@@ -58,4 +58,36 @@ public class Puzzle2 {
         }
         return result;
     }
+
+    String[] findCorrectId(List<String> input) {
+
+        String str1 = null;
+        String str2 = null;
+        String[] stringsWithDiff = null;
+        String stringWithDiff1 = null;
+        String stringWithDiff2 = null;
+
+
+        for (int i = 0; i < input.size(); i++) {
+            for (int k = i + 1; k < input.size(); k++) {
+
+                str1 = input.get(i);
+                str2 = input.get(k);
+
+                int commonCount = 0;
+
+                for (int m = 0; m < str1.length() && m < str2.length(); m++) {
+                    if (str1.charAt(m) == str2.charAt(m)) {
+                        commonCount++;
+                        if (commonCount >= str1.length() - 1) {
+                            stringWithDiff1 = str1;
+                            stringWithDiff2 = str2;
+                            stringsWithDiff = new String[]{str1, str2};
+                            }
+                        }
+                    }
+                }
+            }
+        return stringsWithDiff;
+    }
 }
