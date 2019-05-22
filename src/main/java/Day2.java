@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Puzzle2 {
+public class Day2 {
 
     FileLoader f = new FileLoader();
     List<String> input = new ArrayList<>();
@@ -83,11 +83,21 @@ public class Puzzle2 {
                             stringWithDiff1 = str1;
                             stringWithDiff2 = str2;
                             stringsWithDiff = new String[]{str1, str2};
-                            }
                         }
                     }
                 }
             }
+        }
         return stringsWithDiff;
+    }
+
+    public static void main(String[] args) {
+        Day2 d2 = new Day2();
+
+        int result = d2.calculateOccurences(d2.loadInput());
+
+        System.out.println("Answer to puzzle 2A: " + result);
+        System.out.println("Answer to puzzle 2B: "
+                + d2.findCorrectId(d2.input)[0] + " " + d2.findCorrectId(d2.input)[1] + " without letters b & a");
     }
 }

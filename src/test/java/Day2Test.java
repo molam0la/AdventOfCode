@@ -8,13 +8,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class Puzzle2Test {
+public class Day2Test {
 
-    Puzzle2 p2;
+    Day2 p2;
 
     @Before
     public void setUp() throws Exception {
-        p2 = new Puzzle2();
+        p2 = new Day2();
     }
 
     @Test

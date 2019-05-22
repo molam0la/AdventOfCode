@@ -1,14 +1,7 @@
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
-public class Puzzle1 {
+public class Day1 {
 
     FileLoader f = new FileLoader();
     List<Integer> input = new ArrayList<>();
@@ -33,5 +26,14 @@ public class Puzzle1 {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        Day1 d1 = new Day1();
+        FileLoader f = new FileLoader();
+        d1.loadInput();
+        List<String> fileInput = f.loadInputFromFile("/Users/sandra/Documents/Dev/AdventOfCode/puzzle1input.txt");
+        List<Integer> fileInputInt = f.convertInputToInterger(fileInput);
+        System.out.println("Answer to puzzle 1: " + d1.findDuplicateSum(fileInputInt));
     }
 }

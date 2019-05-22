@@ -6,14 +6,14 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class Puzzle1Test {
+public class Day1Test {
 
-    Puzzle1 p1;
+    Day1 p1;
     FileLoader f;
 
     @Before
     public void setUp() throws Exception {
-        p1 = new Puzzle1();
+        p1 = new Day1();
         f = new FileLoader();
     }
 
