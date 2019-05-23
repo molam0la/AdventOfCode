@@ -4,6 +4,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class Day3Test {
 
     Day3 p3;
@@ -14,7 +16,7 @@ public class Day3Test {
 
         p3 = new Day3();
 
-        p3.input = sampleClaims;
+        p3.lines = sampleClaims;
         sampleClaims.add("#1 @ 1,3: 4x4");
         sampleClaims.add("#2 @ 3,1: 4x4");
         sampleClaims.add("#3 @ 5,5: 2x2");
@@ -22,14 +24,14 @@ public class Day3Test {
     }
 
     @Test
-    public void createClaims() {
-        p3.countOverlap(sampleClaims);
-//        assertEquals(4, p3.countOverlap(sampleClaims));
+    public void findCountOfOverlappingClaims() {
+        assertEquals(4, p3.countOverlap(sampleClaims));
     }
 
     @Test
     public void findNotOverlappingClaim() {
-        p3.countOverlap(sampleClaims);
+        System.out.println(p3.countOverlap(sampleClaims));
+//        assertTrue(p3.findValidId(sampleClaims).contains("3"));
 
     }
 
