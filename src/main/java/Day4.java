@@ -1,3 +1,6 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,101 +9,87 @@ import static java.lang.String.format;
 
 public class Day4 {
 
-    FileLoader f = new FileLoader();
-    List<String> lines = new ArrayList<>();
-    String filePath = "/Users/sandra/Documents/Dev/AdventOfCode/puzzle4input.txt";
-    List<String> splitLines = new ArrayList<>();
+    private FileLoader f = new FileLoader();
+    private List<String> lines = new ArrayList<>();
+    private String filePath = "/Users/sandra/Documents/Dev/AdventOfCode/puzzle4input.txt";
 
-    public class Guard {
 
-        private int guardId;
-        private Date timeStamp;
-        private String state;
-        private int minutesAwake;
-        private int minutesAsleep;
+    private Map<Integer, Long> minutesAsleep = new HashMap<>();
 
-        public Guard(int guardId, Date timeStamp, String state) {
-            this.guardId = guardId;
-            this.timeStamp = timeStamp;
-            this.state = state;
-        }
-
-        public int getGuardId() {
-            return guardId;
-        }
-
-        public void setGuardId(int guardId) {
-            this.guardId = guardId;
-        }
-
-        public Date getTimeStamp() {
-            return timeStamp;
-        }
-
-        public void setTimeStamp(Date timeStamp) {
-            this.timeStamp = timeStamp;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-
-        public int getMinutesAwake() {
-            return minutesAwake;
-        }
-
-        public void setMinutesAwake(int minutesAwake) {
-            this.minutesAwake = minutesAwake;
-        }
-
-        public int getMinutesAsleep() {
-            return minutesAsleep;
-        }
-
-        public void setMinutesAsleep(int minutesAsleep) {
-            this.minutesAsleep = minutesAsleep;
-        }
+    public Map<Integer, Long> getMinutesAsleep() {
+        return minutesAsleep;
     }
 
-    List<String> loadInput() {
+    private int longestSleeperId = 0;
+    private int [] mostSleepMinutes = new int [60];
+
+    public int[] getMostSleepMinutes() {
+        return mostSleepMinutes;
+    }
+
+    private List<String> loadInput() {
         lines = f.loadInputFromFile(filePath);
         return lines;
     }
 
-    List<String> sortLines(List<String> lines) {
+    private List<String> sortLines(List<String> lines) {
         Collections.sort(lines);
         return lines;
     }
 
-    List<String> splitLines(List<String> lines) {
+    public Map<Integer, Long> calculateMinutesAsleep(List<String> lines) {
 
-        // - Matches every character except ] and expects to find 1 or more characters
-        // - The square bracket format is powerful as you can do [ A-Za-z0-9\\-] to match any upper or lowercase letter,
-        //     number, space or dash, for example. The \\s are an "escape character" so that Java knows you mean the exact
-        //     character - not a range (like between A-Z).
-        // - The ()s denote a group in regex
+        List<String> sortedLines = sortLines(lines);
+
         String group1 = "([^]]+)";
-
-        // Matches any character and expects to find 0 or more characters
         String group2 = "(.*)";
 
         String regex = "\\[" + group1 + "]" + group2;
-        Pattern pattern = Pattern.compile(regex); // Compiles our rexeg into a Pattern which can be used to create multiple Matchers
+        Pattern pattern = Pattern.compile(regex);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        for (String line : lines) {
+        int guard = 0;
+        LocalDateTime fallsAsleep = null;
+
+        for (String line : sortedLines) {
             Matcher matcher = pattern.matcher(line);
-            if (!matcher.matches()) throw new IllegalStateException(format("Regex %s didn't match line: %s", regex, line));
+            if (!matcher.matches())
+                throw new IllegalStateException(format("Regex %s didn't match line: %s", regex, line));
+            if (line.contains("shift")) {
+                guard = Integer.parseInt(matcher.group(2).replaceAll("[^\\d.]", ""));
+            } else if (line.contains("falls")) {
+                fallsAsleep = LocalDateTime.parse(matcher.group(1), dateFormat);
+            } else {
+                LocalDateTime wakesUp = LocalDateTime.parse(matcher.group(1), dateFormat);
 
+                long minutes = Duration.between(fallsAsleep, wakesUp).toMinutes();
+                long previousMinutes = 0;
+                if (minutesAsleep.get(guard) != null) {
+                    previousMinutes = minutesAsleep.get(guard);
+                }
+                minutesAsleep.put(guard, previousMinutes + minutes);
+            }
         }
-        return splitLines;
+        return minutesAsleep;
     }
 
+    public int findLongestSleeper(Map<Integer, Long> minutesAsleep) {
+
+        long longestSleep = Collections.max(minutesAsleep.values());
+
+        for (Map.Entry<Integer, Long> sleeper : minutesAsleep.entrySet()) {
+            if (sleeper.getValue() == longestSleep) {
+                longestSleeperId = sleeper.getKey();
+            }
+        }
+        return longestSleeperId;
+    }
 
     public static void main(String[] args) {
 
+        Day4 d4 = new Day4();
+        System.out.println(d4.findLongestSleeper(d4.calculateMinutesAsleep(d4.loadInput())));
+
     }
 }
+
