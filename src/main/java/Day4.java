@@ -1,6 +1,7 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,26 +11,30 @@ import static java.lang.String.format;
 public class Day4 {
 
     private FileLoader f = new FileLoader();
-    private List<String> lines = new ArrayList<>();
-    private String filePath = "/Users/sandra/Documents/Dev/AdventOfCode/puzzle4input.txt";
 
+    private String group1 = "([^]]+)";
+    private String group2 = "(.*)";
+
+    private String regex = "\\[" + group1 + "]" + group2;
+    private Pattern pattern = Pattern.compile(regex);
+    private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private Map<Integer, Long> minutesAsleep = new HashMap<>();
 
-    public Map<Integer, Long> getMinutesAsleep() {
+    Map<Integer, Long> getMinutesAsleep() {
         return minutesAsleep;
     }
 
     private int longestSleeperId = 0;
-    private int [] mostSleepMinutes = new int [60];
+    private int[] mostSleepMinutes = new int[60];
 
     public int[] getMostSleepMinutes() {
         return mostSleepMinutes;
     }
 
     private List<String> loadInput() {
-        lines = f.loadInputFromFile(filePath);
-        return lines;
+        String filePath = "/Users/sandra/Documents/Dev/AdventOfCode/puzzle4input.txt";
+        return f.loadInputFromFile(filePath);
     }
 
     private List<String> sortLines(List<String> lines) {
@@ -37,22 +42,17 @@ public class Day4 {
         return lines;
     }
 
-    public Map<Integer, Long> calculateMinutesAsleep(List<String> lines) {
+
+    Map<Integer, Long> calculateMinutesAsleep(List<String> lines) {
 
         List<String> sortedLines = sortLines(lines);
-
-        String group1 = "([^]]+)";
-        String group2 = "(.*)";
-
-        String regex = "\\[" + group1 + "]" + group2;
-        Pattern pattern = Pattern.compile(regex);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         int guard = 0;
         LocalDateTime fallsAsleep = null;
 
         for (String line : sortedLines) {
             Matcher matcher = pattern.matcher(line);
+
             if (!matcher.matches())
                 throw new IllegalStateException(format("Regex %s didn't match line: %s", regex, line));
             if (line.contains("shift")) {
@@ -64,6 +64,7 @@ public class Day4 {
 
                 long minutes = Duration.between(fallsAsleep, wakesUp).toMinutes();
                 long previousMinutes = 0;
+
                 if (minutesAsleep.get(guard) != null) {
                     previousMinutes = minutesAsleep.get(guard);
                 }
@@ -73,7 +74,7 @@ public class Day4 {
         return minutesAsleep;
     }
 
-    public int findLongestSleeper(Map<Integer, Long> minutesAsleep) {
+    int findLongestSleeper(Map<Integer, Long> minutesAsleep) {
 
         long longestSleep = Collections.max(minutesAsleep.values());
 
@@ -85,11 +86,71 @@ public class Day4 {
         return longestSleeperId;
     }
 
+    int[] mapSleepMinutes(List<String> lines, int longestSleeperId) {
+
+        List<String> sortedLines = sortLines(lines);
+        int guard = 0;
+        int mostSleptMin = 0;
+        LocalDateTime fallsAsleep = null;
+        ArrayList<int[]> listOfSleptMinutes = new ArrayList<>();
+
+        for (String line : sortedLines) {
+            Matcher matcher = pattern.matcher(line);
+            if (!matcher.matches())
+                throw new IllegalStateException(format("Regex %s didn't match line: %s", regex, line));
+            if (line.contains("shift")) {
+                guard = Integer.parseInt(matcher.group(2).replaceAll("[^\\d.]", ""));
+            } else if (line.contains("falls")) {
+                fallsAsleep = LocalDateTime.parse(matcher.group(1), dateFormat);
+            } else {
+                LocalDateTime wakesUp = LocalDateTime.parse(matcher.group(1), dateFormat);
+                long minutes = Duration.between(fallsAsleep, wakesUp).toMinutes();
+
+                if (guard == longestSleeperId) {
+                    int minuteOfTheHour = fallsAsleep.get(ChronoField.MINUTE_OF_HOUR);
+                    fillArrayWithSleepMinutes(mostSleepMinutes, minuteOfTheHour, minutes);
+                }
+            }
+
+        }
+        return mostSleepMinutes;
+    }
+
+    int[] fillArrayWithSleepMinutes(int[] mostSleepMinutes, int minuteOfTheHour, long minutes) {
+
+        for (int j = 0; j < minutes; j++) {
+            int index = minuteOfTheHour + j - 1;
+            int currentValue = mostSleepMinutes[index];
+            mostSleepMinutes[index] = currentValue + 1;
+        }
+        return mostSleepMinutes;
+    }
+
+    int findMostSleptMinute(int[] mostSleepMinutes) {
+
+        int max = mostSleepMinutes[0];
+        int index = 0;
+
+        for (int i = 0; i < mostSleepMinutes.length; i++) {
+            if (max < mostSleepMinutes[i]) {
+                max = mostSleepMinutes[i];
+                index = i;
+            }
+        }
+        return index + 1;
+    }
+
+
     public static void main(String[] args) {
 
         Day4 d4 = new Day4();
-        System.out.println(d4.findLongestSleeper(d4.calculateMinutesAsleep(d4.loadInput())));
+        d4.loadInput();
+        int longestSleeper = d4.findLongestSleeper(d4.calculateMinutesAsleep(d4.loadInput()));
+        int mostSleptMinute = d4.findMostSleptMinute(d4.mapSleepMinutes(d4.loadInput(), longestSleeper));
 
+        System.out.println(longestSleeper * mostSleptMinute);
+        
     }
 }
+
 

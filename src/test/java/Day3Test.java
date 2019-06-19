@@ -20,7 +20,6 @@ public class Day3Test {
         sampleClaims.add("#1 @ 1,3: 4x4");
         sampleClaims.add("#2 @ 3,1: 4x4");
         sampleClaims.add("#3 @ 5,5: 2x2");
-
     }
 
     @Test
@@ -30,7 +29,6 @@ public class Day3Test {
 
     @Test
     public void findNotOverlappingClaim() {
-        System.out.println(p3.countOverlap(sampleClaims));
 //        assertTrue(p3.findValidId(sampleClaims).contains("3"));
 
     }
