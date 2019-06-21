@@ -21,15 +21,18 @@ public class Day4 {
 
     private Map<Integer, Long> minutesAsleep = new HashMap<>();
 
-    Map<Integer, Long> getMinutesAsleep() {
-        return minutesAsleep;
-    }
 
     private int longestSleeperId = 0;
     private int[] mostSleepMinutes = new int[60];
+    private Map<Integer, int[]> allGuardsMappedSleep = new HashMap<>();
+
 
     public int[] getMostSleepMinutes() {
         return mostSleepMinutes;
+    }
+
+    public Map<Integer, int[]> getAllGuardsMappedSleep() {
+        return allGuardsMappedSleep;
     }
 
     private List<String> loadInput() {
@@ -90,9 +93,7 @@ public class Day4 {
 
         List<String> sortedLines = sortLines(lines);
         int guard = 0;
-        int mostSleptMin = 0;
         LocalDateTime fallsAsleep = null;
-        ArrayList<int[]> listOfSleptMinutes = new ArrayList<>();
 
         for (String line : sortedLines) {
             Matcher matcher = pattern.matcher(line);
@@ -105,10 +106,14 @@ public class Day4 {
             } else {
                 LocalDateTime wakesUp = LocalDateTime.parse(matcher.group(1), dateFormat);
                 long minutes = Duration.between(fallsAsleep, wakesUp).toMinutes();
+                int minuteOfTheHour = fallsAsleep.get(ChronoField.MINUTE_OF_HOUR);
 
                 if (guard == longestSleeperId) {
-                    int minuteOfTheHour = fallsAsleep.get(ChronoField.MINUTE_OF_HOUR);
+//                    System.out.println("Longest sleeper" + guard);
                     fillArrayWithSleepMinutes(mostSleepMinutes, minuteOfTheHour, minutes);
+                } else {
+                    int[] newMostSleepMinutes = new int[60];
+                    allGuardsMappedSleep.put(guard, fillArrayWithSleepMinutes(newMostSleepMinutes, minuteOfTheHour, minutes));
                 }
             }
 
@@ -119,7 +124,10 @@ public class Day4 {
     int[] fillArrayWithSleepMinutes(int[] mostSleepMinutes, int minuteOfTheHour, long minutes) {
 
         for (int j = 0; j < minutes; j++) {
-            int index = minuteOfTheHour + j - 1;
+            int index = minuteOfTheHour + j;
+            if (index != 0) {
+                index = minuteOfTheHour + j - 1;
+            }
             int currentValue = mostSleepMinutes[index];
             mostSleepMinutes[index] = currentValue + 1;
         }
@@ -148,8 +156,10 @@ public class Day4 {
         int longestSleeper = d4.findLongestSleeper(d4.calculateMinutesAsleep(d4.loadInput()));
         int mostSleptMinute = d4.findMostSleptMinute(d4.mapSleepMinutes(d4.loadInput(), longestSleeper));
 
-        System.out.println(longestSleeper * mostSleptMinute);
-        
+        System.out.println("Part A solution " + longestSleeper * mostSleptMinute);
+
+
+        System.out.println(Arrays.toString(d4.getAllGuardsMappedSleep().get(2521)));
     }
 }
 

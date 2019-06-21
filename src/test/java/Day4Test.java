@@ -61,4 +61,15 @@ public class Day4Test {
         d4.mapSleepMinutes(sampleEntries, 10);
         assertEquals(24, d4.findMostSleptMinute(d4.mapSleepMinutes(sampleEntries, 10)));
     }
+
+    @Test
+    public void checkAllGuardsSleepingPattern() {
+        d4.mapSleepMinutes(sampleEntries, 10);
+        assertEquals(3, d4.getAllGuardsMappedSleep().get(99)[44]-1);
+    }
+
+    @Test
+    public void checkAllGuardsMostSleptMinute() {
+
+    }
 }
