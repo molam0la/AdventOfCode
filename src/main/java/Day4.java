@@ -1,3 +1,6 @@
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,17 +24,17 @@ public class Day4 {
 
     private Map<Integer, Long> minutesAsleep = new HashMap<>();
 
-
+    private int guard = 0;
     private int longestSleeperId = 0;
     private int[] mostSleepMinutes = new int[60];
-    private Map<Integer, int[]> allGuardsMappedSleep = new HashMap<>();
+    private MultiValuedMap<Integer, int[]> allGuardsMappedSleep = new HashSetValuedHashMap<>();
 
 
     public int[] getMostSleepMinutes() {
         return mostSleepMinutes;
     }
 
-    public Map<Integer, int[]> getAllGuardsMappedSleep() {
+    public MultiValuedMap<Integer, int[]> getAllGuardsMappedSleep() {
         return allGuardsMappedSleep;
     }
 
@@ -92,7 +95,6 @@ public class Day4 {
     int[] mapSleepMinutes(List<String> lines, int longestSleeperId) {
 
         List<String> sortedLines = sortLines(lines);
-        int guard = 0;
         LocalDateTime fallsAsleep = null;
 
         for (String line : sortedLines) {
@@ -112,13 +114,39 @@ public class Day4 {
 //                    System.out.println("Longest sleeper" + guard);
                     fillArrayWithSleepMinutes(mostSleepMinutes, minuteOfTheHour, minutes);
                 } else {
-                    int[] newMostSleepMinutes = new int[60];
-                    allGuardsMappedSleep.put(guard, fillArrayWithSleepMinutes(newMostSleepMinutes, minuteOfTheHour, minutes));
+                    allGuardsMappedSleep.put(guard, fillArrayWithSleepMinutes(new int[60], minuteOfTheHour, minutes));
                 }
             }
 
         }
+
+        HashMap<Integer, int[]> result = combineAllGuardSleepPatterns(allGuardsMappedSleep);
+
+        for (Map.Entry<Integer, int[]> guardToSleepsPerMinute : result.entrySet()) {
+            System.out.println(guardToSleepsPerMinute.getKey());
+            System.out.println(Arrays.toString(guardToSleepsPerMinute.getValue()));
+            System.out.println();
+        }
+
         return mostSleepMinutes;
+    }
+
+    HashMap<Integer, int[]> combineAllGuardSleepPatterns(MultiValuedMap<Integer, int[]> allGuardsMappedSleep) {
+        HashMap<Integer, int[]> combinedAllGuardsMappedSleep = new HashMap<>();
+
+        for (Map.Entry<Integer, Collection<int[]>> guardToArrays : allGuardsMappedSleep.asMap().entrySet()) {
+
+            int[] finalPattern = new int[60];
+
+            for (int[] ints : guardToArrays.getValue()) {
+                for (int i = 0; i < ints.length; i++) {
+                    finalPattern[i] += ints[i];
+                }
+            }
+
+            combinedAllGuardsMappedSleep.put(guardToArrays.getKey(), finalPattern);
+        }
+        return combinedAllGuardsMappedSleep;
     }
 
     int[] fillArrayWithSleepMinutes(int[] mostSleepMinutes, int minuteOfTheHour, long minutes) {
@@ -158,8 +186,7 @@ public class Day4 {
 
         System.out.println("Part A solution " + longestSleeper * mostSleptMinute);
 
-
-        System.out.println(Arrays.toString(d4.getAllGuardsMappedSleep().get(2521)));
+//        System.out.println(Arrays.toString(d4.getAllGuardsMappedSleep().get(461)));
     }
 }
 
