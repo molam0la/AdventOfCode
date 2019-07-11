@@ -42,7 +42,6 @@ public class Day4Test {
     public void testSplittingLines() {
         assertEquals(new Long(30), d4.calculateMinutesAsleep(sampleEntries).get(99));
     }
-
     @Test
     public void findLongestSleeper() {
         assertEquals(10, d4.findLongestSleeper(d4.calculateMinutesAsleep(sampleEntries)));
