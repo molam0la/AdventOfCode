@@ -33,7 +33,7 @@ public class Day5Test {
     }
 
     @Test
-    public void testRemovingUnits() {
+    public void removingUnits() {
         samplePolymer.add("dabAcCaCBAcCcaDA");
         d5.reactPolymer(d5.makePolymer(samplePolymer));
         assertEquals(10, d5.getPolymer().size());
@@ -45,5 +45,17 @@ public class Day5Test {
         d5.reactPolymer(d5.makePolymer(samplePolymer));
         System.out.println(d5.getPolymer());
     }
-    
+
+    @Test
+    public void removingAllSameUnits() {
+        samplePolymer.add("dabAcCaCBAcCcaDA");
+        assertEquals(true, d5.removeSameLetterUnits(d5.makePolymer(samplePolymer)).containsKey('a'));
+    }
+
+    @Test
+    public void reactShortenedPolymers() {
+        samplePolymer.add("dabAcCaCBAcCcaDA");
+        assertEquals(4, d5.reactShortenedPolymer(d5.removeSameLetterUnits(d5.makePolymer(samplePolymer))));
+    }
+
 }
