@@ -31,10 +31,6 @@ public class Grid {
         return grid;
     }
 
-    public void setGrid(int[][] grid) {
-        this.grid = grid;
-    }
-
     public void load(List<String> lines) {
         createGrid(lines);
         loadCoordinates(lines);
@@ -135,9 +131,6 @@ public class Grid {
                 }
             }
         }
-
-//        drawCoordinates(grid);
-
     }
 
     public boolean isTouchingBoundaries(int gridX, int gridY) {
@@ -166,21 +159,19 @@ public class Grid {
                 }
             }
         }
+
         Map<Integer, Long> numberOfFinitePoints;
         numberOfFinitePoints = finitePointsList.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-//        System.out.println(numberOfFinitePoints);
 
         Optional<Map.Entry<Integer, Long>> totalPoints = numberOfFinitePoints.entrySet()
                 .stream()
                 .max(Comparator.comparing(Map.Entry::getValue));
-        long largestAreaSize = totalPoints.get().getValue() + 1 ;
 
-        System.out.println(largestAreaSize);
+        long largestAreaSize = totalPoints.get().getValue() + 1 ;
 
         return largestAreaSize;
     }
-
 
 }
 

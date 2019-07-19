@@ -34,16 +34,9 @@ public class Day6Test {
     }
 
     @Test
-    public void testDrawingCoordinates() {
-//        grid.createGrid(sampleCoordinates);
-//        grid.loadCoordinates(sampleCoordinates);
-    }
-
-    @Test
     public void testManhattanDistance() {
         grid.load(sampleCoordinates);
         grid.calculateManhattanDistance();
-        grid.countFinitePointsArea();
-
+        assertEquals(17, grid.countFinitePointsArea());
     }
 }
