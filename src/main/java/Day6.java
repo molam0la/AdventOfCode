@@ -14,9 +14,10 @@ public class Day6 {
         Grid grid = new Grid();
         List<String> input = d6.loadInput();
         grid.load(input);
-        grid.calculateManhattanDistance();
-
-        System.out.println("Answer to part A is " + grid.countFinitePointsArea());
+//        grid.calculateManhattanDistance();
+//
+//        System.out.println("Answer to part A is " + grid.countFinitePointsArea());
+        System.out.println("Anser to part B is " + grid.findSafeRegion(10000));
     }
 
 }

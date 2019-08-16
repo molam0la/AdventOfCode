@@ -168,12 +168,38 @@ public class Grid {
                 .stream()
                 .max(Comparator.comparing(Map.Entry::getValue));
 
-        long largestAreaSize = totalPoints.get().getValue() + 1 ;
+        long largestAreaSize = totalPoints.get().getValue() + 1;
 
         return largestAreaSize;
     }
 
+    public int findSafeRegion(int range) {
+        int manhattanDistance;
+        int totalDistance = 0;
+        ArrayList acceptedDistance = new ArrayList();
+
+        for (int gridX = 0; gridX < grid.length; gridX++) {
+            for (int gridY = 0; gridY < grid.length; gridY++) {
+
+                for (Map.Entry<Integer, Point> entry : idsAndCoordinatesHashMap.entrySet()) {
+                    int coordinateX = entry.getValue().getX();
+                    int coordinateY = entry.getValue().getY();
+
+                    manhattanDistance = Math.abs(gridX - coordinateX) + Math.abs(gridY - coordinateY);
+
+                    grid[gridX][gridY] = manhattanDistance;
+                    totalDistance = totalDistance + manhattanDistance;
+                }
+                if (totalDistance < range) {
+                    acceptedDistance.add(totalDistance);
+                }
+                totalDistance = 0;
+            }
+        }
+        return acceptedDistance.size();
+    }
 }
+
 
 
 

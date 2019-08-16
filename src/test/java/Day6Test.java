@@ -25,18 +25,26 @@ public class Day6Test {
         sampleCoordinates.add("3,,4");
         sampleCoordinates.add("5,,5");
         sampleCoordinates.add("8,,9");
+
+        grid.load(sampleCoordinates);
+
     }
 
     @Test
     public void testMakingGrid() {
-        grid.load(sampleCoordinates);
-        assertEquals(9, grid.getGrid().length);
+        assertEquals(11, grid.getGrid().length);
     }
 
     @Test
-    public void testManhattanDistance() {
-        grid.load(sampleCoordinates);
+    public void testFindingLargestArea() {
         grid.calculateManhattanDistance();
         assertEquals(17, grid.countFinitePointsArea());
+    }
+
+    @Test
+    public void testManhattanDistanceForRegion() {
+        assertEquals(16, grid.findSafeRegion(32));
+
+
     }
 }
